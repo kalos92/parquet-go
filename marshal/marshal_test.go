@@ -132,6 +132,7 @@ func TestMarshalFast(t *testing.T) {
 		{testElem{NestRepeated: [][]int32{}}},
 		{testElem{NestRepeated: [][]int32{{}}}},
 		{testElem{NestRepeated: [][]int32{{1, 2, 3}}}},
+
 		// Test doesn't pass because it disagrees with Marshal, but I'm pretty sure that,
 		// if this is supported at all, this implementation is correct and there's a bug
 		// in Marshal.

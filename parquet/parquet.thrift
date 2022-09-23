@@ -38,6 +38,8 @@ enum Type {
   DOUBLE = 5;
   BYTE_ARRAY = 6;
   FIXED_LEN_BYTE_ARRAY = 7;
+  GO_TIME_TIME = 8;
+		
 }
 
 /**

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/big"
 	"reflect"
+	"time"
 
 	"github.com/xitongsys/parquet-go/parquet"
 )
@@ -257,6 +258,10 @@ func InterfaceToParquetType(src interface{}, pT *parquet.Type) interface{} {
 			return src
 		} else {
 			return reflect.ValueOf(src).String()
+		}
+	case parquet.Type_GO_TIME_TIME:
+		{
+			return src.(time.Time).UnixMilli()
 		}
 
 	default:

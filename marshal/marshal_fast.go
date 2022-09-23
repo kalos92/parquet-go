@@ -3,13 +3,14 @@ package marshal
 import (
 	"errors"
 	"fmt"
+	"unsafe"
+
 	"github.com/goccy/go-reflect"
 	"github.com/xitongsys/parquet-go/common"
 	"github.com/xitongsys/parquet-go/layout"
 	"github.com/xitongsys/parquet-go/parquet"
 	"github.com/xitongsys/parquet-go/schema"
 	"github.com/xitongsys/parquet-go/types"
-	"unsafe"
 )
 
 // MarshalFast implements the Marshal function while maximizing performance and minimizing

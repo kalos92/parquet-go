@@ -2,7 +2,9 @@ package marshal
 
 import (
 	"errors"
+	"log"
 	"reflect"
+	"time"
 
 	"github.com/xitongsys/parquet-go/common"
 	"github.com/xitongsys/parquet-go/layout"
@@ -277,6 +279,7 @@ func Marshal(srcInterface []interface{}, schemaHandler *schema.SchemaHandler) (t
 		stack = append(stack, node)
 
 		for len(stack) > 0 {
+
 			ln := len(stack)
 			node := stack[ln-1]
 			stack = stack[:ln-1]
@@ -289,7 +292,7 @@ func Marshal(srcInterface []interface{}, schemaHandler *schema.SchemaHandler) (t
 
 			if tk == reflect.Ptr {
 				m = &ParquetPtr{}
-			} else if tk == reflect.Struct {
+			} else if tk == reflect.Struct && !isTime(node.Val) {
 				m = &ParquetStruct{}
 			} else if tk == reflect.Slice {
 				m = &ParquetSlice{schemaHandler: schemaHandler}
@@ -309,7 +312,14 @@ func Marshal(srcInterface []interface{}, schemaHandler *schema.SchemaHandler) (t
 				if node.Val.IsValid() {
 					v = node.Val.Interface()
 				}
-				table.Values = append(table.Values, types.InterfaceToParquetType(v, schema.Type))
+				if isTime(node.Val) {
+					log.Println(node.Val)
+					t := parquet.Type_GO_TIME_TIME
+					table.Values = append(table.Values, types.InterfaceToParquetType(v, &t))
+				} else {
+					table.Values = append(table.Values, types.InterfaceToParquetType(v, schema.Type))
+				}
+
 				table.DefinitionLevels = append(table.DefinitionLevels, node.DL)
 				table.RepetitionLevels = append(table.RepetitionLevels, node.RL)
 				continue
@@ -364,4 +374,9 @@ func setupTableMap(schemaHandler *schema.SchemaHandler, numElements int) map[str
 		}
 	}
 	return tableMap
+}
+
+func isTime(obj reflect.Value) bool {
+	_, ok := obj.Interface().(time.Time)
+	return ok
 }
